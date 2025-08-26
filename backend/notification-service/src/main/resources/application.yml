@@ -1,0 +1,15 @@
+quarkus:
+  application:
+    name: notification-service
+  http:
+    port: 8082
+
+  # Logging
+  log:
+    category:
+      "org.taskmanagementapp.notification":
+        level: DEBUG
+
+mongodb:
+  connection-string: ${QUARKUS_MONGODB_CONNECTION_STRING:mongodb://mongo:27017}
+  database: ${QUARKUS_MONGODB_DATABASE:notifications}

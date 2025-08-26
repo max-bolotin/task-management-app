@@ -1,0 +1,21 @@
+micronaut:
+  application:
+    name: project-service
+
+datasources:
+  default:
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskdb}
+    username: ${DATASOURCE_USERNAME:taskapp}
+    password: ${DATASOURCE_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+
+server:
+  port: 8080

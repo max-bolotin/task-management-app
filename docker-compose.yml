@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: taskapp
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: taskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  user-service:
+    build:
+      context: .
+      dockerfile: ./backend/user-service/Dockerfile
+    container_name: user-service
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskdb
+      SPRING_DATASOURCE_USERNAME: taskapp
+      SPRING_DATASOURCE_PASSWORD: secret
+    ports:
+      - "8081:8080"
+
+  project-service:
+    build:
+      context: .
+      dockerfile: ./backend/project-service/Dockerfile
+    container_name: project-service
+    depends_on:
+      - postgres
+      - user-service
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/taskdb
+      DATASOURCE_USERNAME: taskapp
+      DATASOURCE_PASSWORD: secret
+    ports:
+      - "8082:8080"
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./backend/notification-service/Dockerfile
+    container_name: notification-service
+    depends_on:
+      - mongo
+    environment:
+      QUARKUS_MONGODB_CONNECTION_STRING: mongodb://mongo:27017
+      QUARKUS_MONGODB_DATABASE: notifications
+    ports:
+      - "8083:8080"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    container_name: frontend
+    depends_on:
+      - user-service
+      - project-service
+      - notification-service
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
+  mongo_data:

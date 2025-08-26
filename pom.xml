@@ -13,10 +13,8 @@
   <modules>
     <module>backend/common</module>
     <module>backend/user-service</module>
-    <!-- TODO: add later
     <module>backend/project-service</module>
     <module>backend/notification-service</module>
-    -->
   </modules>
 
   <properties>
