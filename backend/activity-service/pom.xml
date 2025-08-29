@@ -108,6 +108,9 @@
               <sourceDirs>
                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
               </sourceDirs>
+              <args>
+                <arg>-Xjsr305=strict</arg>
+              </args>
             </configuration>
           </execution>
           <execution>
@@ -120,9 +123,6 @@
         <configuration>
           <jvmTarget>${java.version}</jvmTarget>
           <javaParameters>true</javaParameters>
-          <compilerArgs>
-            <arg>-Xjsr305=strict</arg>
-          </compilerArgs>
         </configuration>
       </plugin>
 
