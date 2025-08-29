@@ -1,0 +1,12 @@
+ktor:
+  deployment:
+    port: ${PORT:8084}
+    host: 0.0.0.0
+  application:
+    modules:
+      - org.taskmanagementapp.activity.ApplicationKt.module
+
+mongo:
+  uri: ${MONGO_URI:"mongodb://localhost:27017"}
+  database: ${MONGO_DB:"activitydb"}
+  collection: ${MONGO_COLLECTION:"events"}
