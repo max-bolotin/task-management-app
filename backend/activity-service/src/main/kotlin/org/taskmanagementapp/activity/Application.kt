@@ -21,7 +21,7 @@ fun Application.module() {
     install(ContentNegotiation) { jackson() }
 
     val mongoUri = environment.config.propertyOrNull("mongo.uri")?.getString()
-        ?: System.getenv("MONGO_URI") ?: "mongodb://mongo:27017"
+        ?: System.getenv("MONGO_URI") ?: "mongodb://localhost:27017"
     val dbName = environment.config.propertyOrNull("mongo.database")?.getString()
         ?: System.getenv("MONGO_DB") ?: "activitydb"
     val coll = environment.config.propertyOrNull("mongo.collection")?.getString()

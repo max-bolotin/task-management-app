@@ -18,39 +18,52 @@ fun Application.activityRoutes(repo: ActivityRepository) {
 
         route("/events") {
             post {
-                val req = call.receive<CreateEventRequest>()
-                val id = repo.save(
-                    ActivityEvent(
-                        type = req.type,
-                        projectId = req.projectId,
-                        taskId = req.taskId,
-                        userId = req.userId,
-                        payload = req.payload
+                try {
+                    val req = call.receive<CreateEventRequest>()
+                    val id = repo.save(
+                        ActivityEvent(
+                            type = req.type,
+                            projectId = req.projectId,
+                            taskId = req.taskId,
+                            userId = req.userId,
+                            payload = req.payload
+                        )
                     )
-                )
-                call.respond(HttpStatusCode.Created, CreateEventResponse(id))
+                    call.respond(HttpStatusCode.Created, CreateEventResponse(id))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
+                }
             }
 
             get {
-                val projectId = call.request.queryParameters["projectId"]
-                val taskId = call.request.queryParameters["taskId"]
+                try {
+                    val projectId = call.request.queryParameters["projectId"]
+                    val taskId = call.request.queryParameters["taskId"]
 
-                val result = when {
-                    projectId != null -> repo.byProject(projectId)
-                    taskId != null -> repo.byTask(taskId)
-                    else -> {
-                        call.respond(HttpStatusCode.BadRequest, "Provide projectId or taskId")
-                        return@get
+                    val result = when {
+                        projectId != null -> repo.byProject(projectId)
+                        taskId != null -> repo.byTask(taskId)
+                        else -> {
+                            call.respond(HttpStatusCode.BadRequest, "Provide projectId or taskId")
+                            return@get
+                        }
                     }
+                    call.respond(result)
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
                 }
-                call.respond(result)
             }
 
             get("/{id}") {
-                val id = call.parameters["id"]!!
-                val event = repo.get(id)
-                if (event == null) call.respond(HttpStatusCode.NotFound)
-                else call.respond(event)
+                try {
+                    val id = call.parameters["id"]!!
+                    val event = repo.get(id)
+                    if (event == null) call.respond(HttpStatusCode.NotFound)
+                    else call.respond(event)
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
+                }
             }
         }
     }
