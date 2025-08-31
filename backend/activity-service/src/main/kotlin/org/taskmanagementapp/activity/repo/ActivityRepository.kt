@@ -29,4 +29,14 @@ class ActivityRepository(
 
     suspend fun get(id: String): ActivityEvent? =
         events.findOneById(ObjectId(id))
+
+    suspend fun all(): List<ActivityEvent> =
+        events.find().toFlow().toList()
+
+    suspend fun delete(id: String): Boolean =
+        events.deleteOneById(ObjectId(id)).wasAcknowledged()
+
+    suspend fun byProjectAndTask(projectId: String, taskId: String): List<ActivityEvent> =
+        events.find(ActivityEvent::projectId eq projectId, ActivityEvent::taskId eq taskId).toFlow()
+            .toList()
 }

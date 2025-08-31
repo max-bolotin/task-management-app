@@ -16,6 +16,19 @@ fun Application.activityRoutes(repo: ActivityRepository) {
             call.respondText("Activity Service (Kotlin/Ktor) is up!")
         }
 
+        get("/health") {
+            call.respondText("Activity Service (Kotlin/Ktor) is healthy!")
+        }
+
+        get("/all") {
+            try {
+                val allEntries = repo.all()
+                call.respond(HttpStatusCode.OK, allEntries)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
+            }
+        }
+
         route("/events") {
             post {
                 try {
@@ -42,6 +55,11 @@ fun Application.activityRoutes(repo: ActivityRepository) {
                     val taskId = call.request.queryParameters["taskId"]
 
                     val result = when {
+                        projectId != null && taskId != null -> repo.byProjectAndTask(
+                            projectId,
+                            taskId
+                        )
+
                         projectId != null -> repo.byProject(projectId)
                         taskId != null -> repo.byTask(taskId)
                         else -> {
@@ -61,6 +79,16 @@ fun Application.activityRoutes(repo: ActivityRepository) {
                     val event = repo.get(id)
                     if (event == null) call.respond(HttpStatusCode.NotFound)
                     else call.respond(event)
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
+                }
+            }
+
+            delete("/{id}") {
+                try {
+                    val id = call.parameters["id"]!!
+                    repo.delete(id)
+                    call.respond(HttpStatusCode.NoContent)
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
                 }
