@@ -1,9 +1,14 @@
 package org.taskmanagementapp.activity.repo
 
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
+import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.eq
+import org.litote.kmongo.gte
 import org.litote.kmongo.reactivestreams.KMongo
 import org.taskmanagementapp.activity.model.ActivityEvent
 
@@ -16,7 +21,34 @@ class ActivityRepository(
     private val database = client.getDatabase(dbName)
     private val events = database.getCollection<ActivityEvent>(collection)
 
+    init {
+        runBlocking {
+            events.createIndex(
+                Indexes.compoundIndex(
+                    Indexes.ascending(ActivityEvent::type.name),
+                    Indexes.ascending(ActivityEvent::projectId.name),
+                    Indexes.ascending(ActivityEvent::taskId.name),
+                    Indexes.ascending(ActivityEvent::userId.name),
+                    Indexes.descending(ActivityEvent::timestamp.name)
+                ),
+                IndexOptions().background(true)
+            )
+        }
+    }
+
     suspend fun save(event: ActivityEvent): String {
+        val existing = events.findOne(
+            and(
+                ActivityEvent::type eq event.type,
+                ActivityEvent::projectId eq event.projectId,
+                ActivityEvent::taskId eq event.taskId,
+                ActivityEvent::userId eq event.userId,
+                ActivityEvent::timestamp gte event.timestamp.minusSeconds(5)
+            )
+        )
+        if (existing != null) {
+            return existing.id.toHexString() // skip saving duplicate
+        }
         val res = events.insertOne(event)
         return (res.insertedId?.asObjectId()?.value ?: event.id).toHexString()
     }
