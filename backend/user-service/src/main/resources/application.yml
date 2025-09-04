@@ -14,5 +14,9 @@ spring:
   sql:
     init:
       mode: always
+  security:
+    user:
+      name: admin
+      password: ${SPRING_SECURITY_PASSWORD:admin123}
 server:
-  port: 8080
+  port: 8081

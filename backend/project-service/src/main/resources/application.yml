@@ -1,21 +1,11 @@
-micronaut:
-  application:
-    name: project-service
-
-datasources:
-  default:
-    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskdb}
-    username: ${DATASOURCE_USERNAME:taskapp}
-    password: ${DATASOURCE_PASSWORD:secret}
-    driver-class-name: org.postgresql.Driver
-
-jpa:
-  default:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: update
-        show_sql: true
-
-server:
-  port: 8080
+quarkus:
+  http:
+    port: 8082
+  smallrye-openapi:
+    path: /q/openapi
+    info:
+      title: Project Service API
+      version: "1.0"
+      description: Endpoints for projects/boards/tasks (skeleton)
+  swagger-ui:
+    always-include: true

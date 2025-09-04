@@ -1,15 +1,32 @@
-quarkus:
+micronaut:
   application:
     name: notification-service
-  http:
-    port: 8082
+  server:
+    port: 8083
 
-  # Logging
-  log:
-    category:
-      "org.taskmanagementapp.notification":
-        level: DEBUG
+  # Serve generated OpenAPI + Swagger UI as static resources
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
+      static:
+        paths: classpath:static
+        mapping: /**
 
-mongodb:
-  connection-string: ${QUARKUS_MONGODB_CONNECTION_STRING:mongodb://mongo:27017}
-  database: ${QUARKUS_MONGODB_DATABASE:notifications}
+# Enable OpenAPI and Swagger UI
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  openapi:
+    enabled: true
+    sensitive: false
+
+# Example: (optional) configure Mongo/Slack/etc. later
+# notification:
+#   slack:
+#     webhookUrl: ${SLACK_WEBHOOK_URL:}
