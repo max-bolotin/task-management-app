@@ -56,6 +56,22 @@
       <artifactId>quarkus-config-yaml</artifactId>
     </dependency>
 
+    <!-- Database -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+
+    <!-- Validation -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+    </dependency>
+
     <!-- Common module -->
     <dependency>
       <groupId>org.task-management-app</groupId>
