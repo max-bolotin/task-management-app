@@ -84,12 +84,11 @@
       <version>1.5.6</version>
     </dependency>
 
-    <!-- (Optional) common DTOs -->
+    <!-- Common DTOs -->
     <dependency>
       <groupId>org.task-management-app</groupId>
       <artifactId>common</artifactId>
       <version>1.0-SNAPSHOT</version>
-      <optional>true</optional>
     </dependency>
 
     <!-- Kotlin -->
