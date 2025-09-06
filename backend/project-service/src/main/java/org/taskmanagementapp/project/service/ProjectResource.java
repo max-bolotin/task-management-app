@@ -1,17 +1,12 @@
 package org.taskmanagementapp.project.service;
 
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.taskmanagementapp.common.dto.ProjectDto;
-import org.taskmanagementapp.project.converter.ProjectDtoToProjectConverter;
-import org.taskmanagementapp.project.converter.ProjectToProjectDtoConverter;
-import org.taskmanagementapp.project.repository.ProjectRepository;
+import org.taskmanagementapp.project.entity.Project;
 
 @Path("/projects")
 @Tag(name = "Projects", description = "Project management operations")
@@ -19,62 +14,57 @@ import org.taskmanagementapp.project.repository.ProjectRepository;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ProjectResource {
 
-  @Inject
-  ProjectRepository projectRepository;
-
-  @Inject
-  ProjectToProjectDtoConverter toDto;
-
-  @Inject
-  ProjectDtoToProjectConverter toEntity;
-
   @GET
   @Operation(summary = "Get all projects")
-  public List<ProjectDto> getAllProjects() {
-    return projectRepository.listAll()
-        .stream()
-        .map(toDto::convert)
-        .toList();
+  public List<Project> getAllProjects() {
+    return Project.listAll();
   }
 
   @GET
   @Path("/{id}")
   @Operation(summary = "Get project by ID")
   public Response getProject(@PathParam("id") Long id) {
-    return projectRepository.findByIdOptional(id)
-        .map(toDto::convert)
-        .map(dto -> Response.ok(dto).build())
-        .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    Project project = Project.findById(id);
+    return project != null ? Response.ok(project).build()
+        : Response.status(Response.Status.NOT_FOUND).build();
   }
 
   @POST
   @Transactional
   @Operation(summary = "Create new project")
-  public Response createProject(@Valid ProjectDto projectDto) {
-    if (projectRepository.existsByKey(projectDto.key())) {
+  public Response createProject(Project project) {
+    // Validate required fields
+    if (project.name == null || project.name.trim().isEmpty()) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity("Project name is required")
+          .build();
+    }
+
+    if (project.key == null || project.key.trim().isEmpty()) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity("Project key is required")
+          .build();
+    }
+
+    // TODO: Auto-assign owner from JWT token when authentication is implemented
+    // In Jira, the logged-in user automatically becomes the project owner
+    // For now, require explicit ownerId until we have JWT/Security context
+    if (project.ownerId == null) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity("Owner ID is required")
+          .build();
+    }
+
+    // Check if key already exists
+    if (Project.find("key", project.key).firstResultOptional().isPresent()) {
       return Response.status(Response.Status.CONFLICT)
           .entity("Project key already exists")
           .build();
     }
 
-    var project = toEntity.convert(projectDto);
-    projectRepository.persist(project);
-    return Response.status(Response.Status.CREATED)
-        .entity(toDto.convert(project))
-        .build();
-  }
-
-  @PATCH
-  @Path("/{id}")
-  @Transactional
-  @Operation(summary = "Update project")
-  public Response updateProject(@PathParam("id") Long id, @Valid ProjectDto projectDto) {
-    return projectRepository.findByIdOptional(id)
-        .map(project -> {
-          toEntity.updateEntity(project, projectDto);
-          return Response.ok(toDto.convert(project)).build();
-        })
-        .orElse(Response.status(Response.Status.NOT_FOUND).build());
+    project.id = null; // Ensure ID is auto-generated
+    project.persist();
+    return Response.status(Response.Status.CREATED).entity(project).build();
   }
 
   @DELETE
@@ -82,7 +72,7 @@ public class ProjectResource {
   @Transactional
   @Operation(summary = "Delete project")
   public Response deleteProject(@PathParam("id") Long id) {
-    boolean deleted = projectRepository.deleteById(id);
+    boolean deleted = Project.deleteById(id);
     return deleted ? Response.noContent().build()
         : Response.status(Response.Status.NOT_FOUND).build();
   }

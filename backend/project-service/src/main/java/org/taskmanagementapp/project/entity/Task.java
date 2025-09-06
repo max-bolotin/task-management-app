@@ -2,21 +2,29 @@ package org.taskmanagementapp.project.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import java.time.LocalDateTime;
+import org.taskmanagementapp.common.enums.TaskStatus;
 
 @Entity
-@Table(name = "projects")
-public class Project extends PanacheEntity {
+@Table(name = "tasks")
+public class Task extends PanacheEntity {
 
   @Column(nullable = false)
-  public String name;
-
-  @Column(nullable = false, unique = true)
-  public String key;
+  public String title;
 
   public String description;
 
-  @Column(name = "owner_id", nullable = false)
-  public Long ownerId;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  public TaskStatus status = TaskStatus.TODO;
+
+  @Column(name = "project_id", nullable = false)
+  public Long projectId;
+
+  @Column(name = "assignee_id")
+  public Long assigneeId;
+
+  @Column(name = "reporter_id")
+  public Long reporterId;
 
   @Column(name = "created_at", nullable = false)
   public LocalDateTime createdAt;

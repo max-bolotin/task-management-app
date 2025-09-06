@@ -6,7 +6,7 @@ quarkus:
     info:
       title: Project Service API
       version: "1.0"
-      description: Project management service with CRUD operations
+      description: Project management service
   swagger-ui:
     always-include: true
   
@@ -20,5 +20,3 @@ quarkus:
   hibernate-orm:
     database:
       generation: update
-    log:
-      sql: ${LOG_SQL:false}
