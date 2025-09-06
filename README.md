@@ -69,6 +69,7 @@ Each service is independent, but they communicate over APIs and share common mod
     - Micronaut (Notification Service)
     - Ktor + Kotlin + Maven (Activity Service)
     - MongoDB (NoSQL) + PostgreSQL (SQL)
+    - Apache Kafka (Event Streaming)
 
 - **Frontend:** React (TypeScript planned)
 
@@ -104,12 +105,17 @@ task-management-app/
 - Java 21+
 - Maven 3.8+
 - Docker & Docker Compose
-- PostgreSQL & MongoDB (via Docker)
+- PostgreSQL, MongoDB & Kafka (via Docker)
 
-### 1. Start Databases
+### 1. Start Infrastructure
 
 ```bash
-docker compose up postgres mongo -d
+# Start databases and Kafka
+docker compose up postgres mongo zookeeper kafka kafka-ui -d
+
+# Create Kafka topics
+docker exec kafka kafka-topics --create --bootstrap-server localhost:9092 --topic activity-events --partitions 3 --replication-factor 1 --if-not-exists
+docker exec kafka kafka-topics --create --bootstrap-server localhost:9092 --topic notification-events --partitions 3 --replication-factor 1 --if-not-exists
 ```
 
 ### 2. Build Common Module
@@ -161,6 +167,7 @@ docker compose up --build
 | Notification Service | http://localhost:8083     | 🔄 In Progress | `/swagger-ui`       |
 | Activity Service     | http://localhost:8084     | 🔄 In Progress | `/docs`             |
 | Frontend             | http://localhost:3000     | 📋 Planned     | -                   |
+| **Kafka UI**         | **http://localhost:9090** | **✅ Available** | **Monitoring**      |
 
 ---
 
@@ -179,6 +186,7 @@ docker compose up --build
     - ✅ Comprehensive test coverage (31 tests)
 - **Common Module** - Shared DTOs and enums
 - **Database Setup** - PostgreSQL and MongoDB via Docker
+- **Kafka Infrastructure** - Event streaming with Kafka, Zookeeper, and Kafka UI
 - **API Documentation** - OpenAPI/Swagger for all services
 
 ### 🔄 In Progress
