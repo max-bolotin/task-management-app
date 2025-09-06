@@ -1,0 +1,8 @@
+quarkus:
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:mem:testdb
+  hibernate-orm:
+    database:
+      generation: drop-and-create

@@ -1,4 +1,4 @@
-package org.taskmanagementapp.project.service;
+package org.taskmanagementapp.project;
 
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.annotations.QuarkusMain;

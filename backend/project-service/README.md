@@ -120,6 +120,38 @@ mvn package
 java -jar target/project-service-1.0-SNAPSHOT.jar
 ```
 
+## Testing
+
+```bash
+# Run all tests
+mvn test
+
+# Build with tests
+mvn package
+
+# Skip tests during build
+mvn package -DskipTests
+```
+
+### Test Coverage
+
+- **ProjectResourceTest** - REST API endpoint testing (8 tests)
+- **TaskResourceTest** - Task management endpoint testing (6 tests)
+    - Task creation and retrieval
+    - Task PATCH updates
+    - Task assignment to users
+    - Error handling for missing resources
+- **ProjectEntityTest** - Entity lifecycle and persistence testing (3 tests)
+- **TaskEntityTest** - Task entity operations testing (3 tests)
+- **SimpleTest** - Basic logic and enum testing (2 tests)
+
+### Status
+
+✅ **All Tests Passing** - 22 tests run successfully  
+✅ **Compilation Fixed** - All source and test files compile successfully  
+✅ **Dependencies Resolved** - JPA, JAX-RS, and H2 test database configured  
+✅ **Build Ready** - Project packages and tests execute without errors
+
 ## Dependencies
 
 - Quarkus REST
@@ -127,3 +159,5 @@ java -jar target/project-service-1.0-SNAPSHOT.jar
 - PostgreSQL JDBC driver
 - OpenAPI/Swagger UI
 - Common module (shared DTOs and enums)
+- JUnit 5 & REST Assured (testing)
+- H2 Database (test database)

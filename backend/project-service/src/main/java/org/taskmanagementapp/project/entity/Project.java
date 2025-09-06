@@ -10,7 +10,7 @@ public class Project extends PanacheEntity {
   @Column(nullable = false)
   public String name;
 
-  @Column(nullable = false, unique = true)
+  @Column(name = "project_key", nullable = false, unique = true)
   public String key;
 
   public String description;
