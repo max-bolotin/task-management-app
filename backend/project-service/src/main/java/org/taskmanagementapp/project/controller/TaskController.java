@@ -5,6 +5,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.taskmanagementapp.common.enums.TaskStatus;
 import org.taskmanagementapp.project.entity.Task;
 import org.taskmanagementapp.project.exception.NotFoundException;
 import org.taskmanagementapp.project.service.TaskService;
@@ -62,5 +63,18 @@ public class TaskController {
     } catch (NotFoundException e) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
+  }
+
+  @POST
+  @Path("/{taskId}/transition")
+  @Operation(summary = "Transition task status")
+  public Response transitionTask(@PathParam("taskId") Long taskId, TransitionRequest request) {
+    Task task = taskService.transitionTask(taskId, request.status);
+    return Response.ok(task).build();
+  }
+
+  public static class TransitionRequest {
+
+    public TaskStatus status;
   }
 }

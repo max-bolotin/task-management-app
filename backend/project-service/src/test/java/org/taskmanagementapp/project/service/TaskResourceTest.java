@@ -200,4 +200,12 @@ class TaskResourceTest {
         .then()
         .statusCode(404);
   }
+
+  @Test
+  void testDeleteTaskNotFound() {
+    given()
+        .when().delete("/tasks/999")
+        .then()
+        .statusCode(404);
+  }
 }

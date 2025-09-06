@@ -1,7 +1,9 @@
 # Task Management App (TMA)
 
-A lightweight yet enhanced **Jira/Trello clone** designed for **small teams, startups, and individuals**.  
-The goal is to provide a **simple, self-hosted project management tool** with a modular architecture and modern technologies.
+A lightweight yet enhanced **Jira/Trello clone** designed for **small teams, startups, and
+individuals**.  
+The goal is to provide a **simple, self-hosted project management tool** with a modular architecture
+and modern technologies.
 
 ---
 
@@ -19,7 +21,8 @@ The goal is to provide a **simple, self-hosted project management tool** with a 
 ## 🏗️ Architecture
 
 The app is built as a **microservices-based system**.  
-Each service is independent, but they communicate over APIs and share common models/utilities from a `common` module.
+Each service is independent, but they communicate over APIs and share common models/utilities from a
+`common` module.
 
 ### **Backend Services**
 
@@ -97,17 +100,20 @@ task-management-app/
 ## 🚀 Running the App
 
 ### Prerequisites
+
 - Java 21+
 - Maven 3.8+
 - Docker & Docker Compose
 - PostgreSQL & MongoDB (via Docker)
 
 ### 1. Start Databases
+
 ```bash
 docker compose up postgres mongo -d
 ```
 
 ### 2. Build Common Module
+
 ```bash
 cd backend/common
 mvn clean install
@@ -116,10 +122,12 @@ mvn clean install
 ### 3. Run Services
 
 **Option A: IntelliJ IDEA (Recommended)**
+
 - Import project as Maven multi-module
 - Run each service individually
 
 **Option B: Command Line**
+
 ```bash
 # User Service (Spring Boot)
 cd backend/user-service
@@ -139,45 +147,70 @@ mvn exec:java
 ```
 
 **Option C: Docker (Full Stack)**
+
 ```bash
 docker compose up --build
 ```
 
 ### 4. Access Services
 
-| Service | URL | Status | Documentation |
-|---------|-----|--------|---------------|
-| User Service | http://localhost:8081 | 🔄 In Progress | `/swagger-ui` |
-| **Project Service** | **http://localhost:8082** | **✅ Complete** | **`/q/swagger-ui`** |
-| Notification Service | http://localhost:8083 | 🔄 In Progress | `/swagger-ui` |
-| Activity Service | http://localhost:8084 | 🔄 In Progress | `/docs` |
-| Frontend | http://localhost:3000 | 📋 Planned | - |
+| Service              | URL                       | Status         | Documentation       |
+|----------------------|---------------------------|----------------|---------------------|
+| User Service         | http://localhost:8081     | 🔄 In Progress | `/swagger-ui`       |
+| **Project Service**  | **http://localhost:8082** | **✅ Complete** | **`/q/swagger-ui`** |
+| Notification Service | http://localhost:8083     | 🔄 In Progress | `/swagger-ui`       |
+| Activity Service     | http://localhost:8084     | 🔄 In Progress | `/docs`             |
+| Frontend             | http://localhost:3000     | 📋 Planned     | -                   |
 
 ---
 
 ## 📝 Current Status
 
 ### ✅ Completed
-- **Project Service** - Full CRUD for projects and tasks
+
+- **Project Service** - Complete with all features:
+    - ✅ Full CRUD for projects and tasks
+    - ✅ Task transitions and status management
+    - ✅ Task assignment to users
+    - ✅ Comment system for tasks
+    - ✅ Search functionality (by text, project, assignee)
+    - ✅ Global exception handling
+    - ✅ Service layer architecture
+    - ✅ Comprehensive test coverage (31 tests)
 - **Common Module** - Shared DTOs and enums
 - **Database Setup** - PostgreSQL and MongoDB via Docker
 - **API Documentation** - OpenAPI/Swagger for all services
 
 ### 🔄 In Progress
+
 - **User Service** - Authentication and user management
 - **Notification Service** - In-app notifications
 - **Activity Service** - Audit logging
 
 ### 📋 Planned
+
 - **Frontend** - React UI
 - **JWT Authentication** - Cross-service security
 - **Service Integration** - Inter-service communication
+- **Side Effects** - Event publishing to activity/notification services
 
 ---
 
 ## 🎯 MVP Roadmap
 
+### Project Service ✅ COMPLETE
+
 - [x] **Project & Task CRUD** - Create, read, update, delete operations
+- [x] **Task Transitions** - Status workflow management
+- [x] **Task Assignment** - Assign tasks to users
+- [x] **Comment System** - Task comments with CRUD operations
+- [x] **Search Functionality** - Text search and filtering
+- [x] **Exception Handling** - Global exception mapper
+- [x] **Service Architecture** - Clean separation of concerns
+- [x] **Test Coverage** - Comprehensive test suite
+
+### Remaining Services
+
 - [x] **Database Integration** - PostgreSQL with proper schema
 - [x] **API Documentation** - Swagger UI for testing
 - [ ] **User Authentication** - JWT-based security
