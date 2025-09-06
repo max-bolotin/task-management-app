@@ -3,6 +3,7 @@ package org.taskmanagementapp.project.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.taskmanagementapp.common.enums.TaskStatus;
 import org.taskmanagementapp.project.entity.Project;
 import org.taskmanagementapp.project.entity.Task;
 import org.taskmanagementapp.project.exception.NotFoundException;
@@ -78,6 +79,17 @@ public class TaskService {
     }
 
     task.assigneeId = userId;
+    return task;
+  }
+
+  @Transactional
+  public Task transitionTask(Long taskId, TaskStatus newStatus) {
+    Task task = Task.findById(taskId);
+    if (task == null) {
+      throw new NotFoundException("Task not found");
+    }
+
+    task.status = newStatus;
     return task;
   }
 }
