@@ -71,6 +71,12 @@
       <version>${micronaut.version}</version>
     </dependency>
 
+    <!-- Common module -->
+    <dependency>
+      <groupId>org.task-management-app</groupId>
+      <artifactId>common</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
 
   </dependencies>
 

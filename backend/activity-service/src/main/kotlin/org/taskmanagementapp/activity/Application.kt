@@ -13,6 +13,7 @@ import io.ktor.server.routing.*
 import org.bson.types.ObjectId
 import org.taskmanagementapp.activity.repo.ActivityRepository
 import org.taskmanagementapp.activity.routes.activityRoutes
+import org.taskmanagementapp.activity.routes.healthRoutes
 
 fun main() {
     embeddedServer(
@@ -59,6 +60,7 @@ fun Application.module() {
     val repo = ActivityRepository(mongoUri, dbName, coll)
 
     routing {
+        healthRoutes()
         activityRoutes(repo)
     }
 }

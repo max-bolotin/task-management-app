@@ -6,6 +6,17 @@ quarkus:
     info:
       title: Project Service API
       version: "1.0"
-      description: Endpoints for projects/boards/tasks (skeleton)
+      description: Project management service
   swagger-ui:
     always-include: true
+  
+  datasource:
+    db-kind: postgresql
+    username: ${DATASOURCE_USERNAME:taskapp}
+    password: ${DATASOURCE_PASSWORD:secret}
+    jdbc:
+      url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskdb}
+  
+  hibernate-orm:
+    database:
+      generation: update
