@@ -396,8 +396,27 @@ body {
   background-color: #f8f9fa;
 }
 
+.activity-item.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.activity-item.clickable:hover {
+  background-color: #e9ecef;
+}
+
+.activity-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .activity-content strong {
   color: #007bff;
+}
+
+.activity-link .activity-content strong {
+  color: #0056b3;
 }
 
 .activity-meta {

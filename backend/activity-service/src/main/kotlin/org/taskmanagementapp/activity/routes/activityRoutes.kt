@@ -58,6 +58,52 @@ fun Route.activityRoutes(service: ActivityService) {
         }
     }
 
+    get("/activities", {
+        description = "Get activities with optional filters"
+        request {
+            queryParameter<String>("projectId") {
+                description = "Filter by project ID"
+                required = false
+            }
+            queryParameter<String>("taskId") {
+                description = "Filter by task ID"
+                required = false
+            }
+            queryParameter<Int>("limit") {
+                description = "Limit number of results"
+                required = false
+            }
+        }
+        response {
+            HttpStatusCode.OK to {
+                description = "List of activities"
+                body<List<Any>> { description = "Activity events" }
+            }
+        }
+    }) {
+        try {
+            val projectId = call.request.queryParameters["projectId"]
+            val taskId = call.request.queryParameters["taskId"]
+            val limit = call.request.queryParameters["limit"]?.toIntOrNull()
+
+            val result = if (projectId != null || taskId != null) {
+                service.getEvents(projectId, taskId)
+            } else {
+                service.getAllEvents()
+            }
+
+            val limitedResult = if (limit != null && limit > 0) {
+                result.take(limit)
+            } else {
+                result
+            }
+
+            call.respond(limitedResult)
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, "Database error: ${e.message}")
+        }
+    }
+
     route("/events") {
         post({
             description = "Create new activity event"

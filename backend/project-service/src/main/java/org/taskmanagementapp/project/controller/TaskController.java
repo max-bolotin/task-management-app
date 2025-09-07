@@ -8,8 +8,11 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.taskmanagementapp.common.enums.TaskStatus;
+import org.taskmanagementapp.common.events.ActivityEventFactory;
+import org.taskmanagementapp.common.events.NotificationEventFactory;
 import org.taskmanagementapp.project.entity.Task;
 import org.taskmanagementapp.project.exception.NotFoundException;
+import org.taskmanagementapp.project.service.EventPublisher;
 import org.taskmanagementapp.project.service.TaskService;
 
 @Path("/tasks")
@@ -20,6 +23,9 @@ public class TaskController {
 
   @Inject
   TaskService taskService;
+
+  @Inject
+  EventPublisher eventPublisher;
 
   @GET
   @Path("/{taskId}")
@@ -39,7 +45,31 @@ public class TaskController {
   public Response updateTask(@Parameter(description = "Task ID") @PathParam("taskId") Long taskId,
       Task updates) {
     try {
+      Task originalTask = taskService.getTaskById(taskId);
+      TaskStatus oldStatus = originalTask.status;
+
       Task task = taskService.updateTask(taskId, updates);
+
+      // Publish events after transaction completes
+      //fixme: move the following publishing method from controller to another level
+      if (updates.status != null && oldStatus != updates.status) {
+        try {
+          eventPublisher.publishActivity(
+              ActivityEventFactory.taskStatusChanged(1L, task.projectId, taskId,
+                  oldStatus.name(), updates.status.name(), task.title)
+          );
+
+          if (task.assigneeId != null) {
+            eventPublisher.publishNotification(
+                NotificationEventFactory.taskStatusChanged(1L, task.assigneeId,
+                    task.projectId, taskId, task.title, updates.status.name())
+            );
+          }
+        } catch (Exception e) {
+          // Ignore event publishing errors
+        }
+      }
+
       return Response.ok(task).build();
     } catch (NotFoundException e) {
       return Response.status(Response.Status.NOT_FOUND).build();

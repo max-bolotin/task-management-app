@@ -12,31 +12,32 @@ import org.taskmanagementapp.common.dto.NotificationEvent;
 @ApplicationScoped
 public class EventPublisher {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventPublisher.class);
+  private static final Logger logger = LoggerFactory.getLogger(EventPublisher.class);
 
-    @Inject
-    @Channel("activity-events")
-    Emitter<ActivityEvent> activityEmitter;
+  @Inject
+  @Channel("activity-events")
+  Emitter<ActivityEvent> activityEmitter;
 
-    @Inject
-    @Channel("notification-events")
-    Emitter<NotificationEvent> notificationEmitter;
+  @Inject
+  @Channel("notification-events")
+  Emitter<NotificationEvent> notificationEmitter;
 
-    public void publishActivity(ActivityEvent event) {
-        try {
-            activityEmitter.send(event);
-            logger.debug("Published activity event: {}", event.eventType());
-        } catch (Exception e) {
-            logger.error("Failed to publish activity event: {}", event.eventType(), e);
-        }
+  public void publishActivity(ActivityEvent event) {
+    try {
+      activityEmitter.send(event);
+      logger.debug("Published activity event: {}", event.eventType());
+    } catch (Exception e) {
+      logger.warn("Failed to publish activity event: {} - {}", event.eventType(), e.getMessage());
     }
+  }
 
-    public void publishNotification(NotificationEvent event) {
-        try {
-            notificationEmitter.send(event);
-            logger.debug("Published notification event: {}", event.eventType());
-        } catch (Exception e) {
-            logger.error("Failed to publish notification event: {}", event.eventType(), e);
-        }
+  public void publishNotification(NotificationEvent event) {
+    try {
+      notificationEmitter.send(event);
+      logger.debug("Published notification event: {}", event.eventType());
+    } catch (Exception e) {
+      logger.warn("Failed to publish notification event: {} - {}", event.eventType(),
+          e.getMessage());
     }
+  }
 }
