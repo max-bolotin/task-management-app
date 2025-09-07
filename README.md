@@ -160,13 +160,13 @@ docker compose up --build
 
 ### 4. Access Services
 
-| Service              | URL                       | Status         | Documentation       |
-|----------------------|---------------------------|----------------|---------------------|
-| User Service         | http://localhost:8081     | 🔄 In Progress | `/swagger-ui`       |
-| **Project Service**  | **http://localhost:8082** | **✅ Complete** | **`/q/swagger-ui`** |
-| Notification Service | http://localhost:8083     | 🔄 In Progress | `/swagger-ui`       |
-| Activity Service     | http://localhost:8084     | 🔄 In Progress | `/docs`             |
-| Frontend             | http://localhost:3000     | 📋 Planned     | -                   |
+| Service              | URL                       | Status          | Documentation       |
+|----------------------|---------------------------|-----------------|---------------------|
+| User Service         | http://localhost:8081     | 🔄 In Progress  | `/swagger-ui`       |
+| **Project Service**  | **http://localhost:8082** | **✅ Complete**  | **`/q/swagger-ui`** |
+| Notification Service | http://localhost:8083     | 🔄 In Progress  | `/swagger-ui`       |
+| **Activity Service** | **http://localhost:8084** | **✅ Complete**  | **`/swagger-ui`**   |
+| Frontend             | http://localhost:3000     | 📋 Planned      | -                   |
 | **Kafka UI**         | **http://localhost:9090** | **✅ Available** | **Monitoring**      |
 
 ---
@@ -184,16 +184,24 @@ docker compose up --build
     - ✅ Global exception handling
     - ✅ Service layer architecture
     - ✅ Comprehensive test coverage (31 tests)
-- **Common Module** - Shared DTOs and enums
+- **Activity Service** - Complete with all features:
+    - ✅ Kafka event consumer for activity logging
+    - ✅ MongoDB storage with audit trail
+    - ✅ REST API for manual event creation
+    - ✅ Failed event handling and dead letter queue
+    - ✅ Service layer architecture
+    - ✅ Comprehensive test coverage (9 tests)
+    - ✅ OpenAPI/Swagger documentation
+- **Common Module** - Shared DTOs, enums, and event factories
 - **Database Setup** - PostgreSQL and MongoDB via Docker
 - **Kafka Infrastructure** - Event streaming with Kafka, Zookeeper, and Kafka UI
+- **Event-Driven Architecture** - Project service publishes events to activity/notification services
 - **API Documentation** - OpenAPI/Swagger for all services
 
 ### 🔄 In Progress
 
 - **User Service** - Authentication and user management
 - **Notification Service** - In-app notifications
-- **Activity Service** - Audit logging
 
 ### 📋 Planned
 
@@ -223,7 +231,7 @@ docker compose up --build
 - [x] **API Documentation** - Swagger UI for testing
 - [ ] **User Authentication** - JWT-based security
 - [ ] **Notification System** - Real-time updates
-- [ ] **Activity Logging** - Audit trail
+- [x] **Activity Logging** - Audit trail
 - [ ] **Frontend UI** - React application
 - [ ] **Service Integration** - Cross-service communication
 - [ ] **Docker Deployment** - Full containerization

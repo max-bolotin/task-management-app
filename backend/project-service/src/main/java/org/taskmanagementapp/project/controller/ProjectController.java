@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.taskmanagementapp.project.entity.Project;
 import org.taskmanagementapp.project.service.ProjectService;
@@ -28,7 +29,7 @@ public class ProjectController {
   @GET
   @Path("/{id}")
   @Operation(summary = "Get project by ID")
-  public Project getProject(@PathParam("id") Long id) {
+  public Project getProject(@Parameter(description = "Project ID") @PathParam("id") Long id) {
     return projectService.getProjectById(id);
   }
 
@@ -42,7 +43,7 @@ public class ProjectController {
   @DELETE
   @Path("/{id}")
   @Operation(summary = "Delete project")
-  public Response deleteProject(@PathParam("id") Long id) {
+  public Response deleteProject(@Parameter(description = "Project ID") @PathParam("id") Long id) {
     projectService.deleteProject(id);
     return Response.noContent().build();
   }

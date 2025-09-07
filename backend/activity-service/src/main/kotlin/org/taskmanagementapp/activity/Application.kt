@@ -11,17 +11,25 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
 import org.bson.types.ObjectId
+import org.taskmanagementapp.activity.consumer.ActivityEventConsumer
 import org.taskmanagementapp.activity.repo.ActivityRepository
 import org.taskmanagementapp.activity.routes.activityRoutes
 import org.taskmanagementapp.activity.routes.healthRoutes
+import org.taskmanagementapp.activity.service.ActivityService
 
 fun main() {
-    embeddedServer(
+    val server = embeddedServer(
         Netty,
         port = System.getenv("PORT")?.toIntOrNull() ?: 8084,
         host = "0.0.0.0",
         module = Application::module
-    ).start(wait = true)
+    )
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        server.stop(1000, 5000)
+    })
+
+    server.start(wait = true)
 }
 
 fun Application.module() {
@@ -58,9 +66,33 @@ fun Application.module() {
         ?: System.getenv("MONGO_COLLECTION") ?: "events"
 
     val repo = ActivityRepository(mongoUri, dbName, coll)
+    val service = ActivityService(repo)
+
+    // Kafka configuration
+    val kafkaConfig = mapOf(
+        "bootstrap.servers" to (environment.config.propertyOrNull("kafka.bootstrap.servers")
+            ?.getString()
+            ?: System.getenv("KAFKA_BOOTSTRAP_SERVERS") ?: "localhost:9092"),
+        "group.id" to (environment.config.propertyOrNull("kafka.group.id")?.getString()
+            ?: System.getenv("KAFKA_GROUP_ID") ?: "activity-service"),
+        "topic" to (environment.config.propertyOrNull("kafka.topic")?.getString()
+            ?: System.getenv("KAFKA_TOPIC") ?: "activity-events"),
+        "auto.offset.reset" to (environment.config.propertyOrNull("kafka.auto.offset.reset")
+            ?.getString()
+            ?: System.getenv("KAFKA_AUTO_OFFSET_RESET") ?: "earliest")
+    )
+
+    // Start Kafka consumer
+    val objectMapper = com.fasterxml.jackson.databind.ObjectMapper().apply {
+        registerModule(com.fasterxml.jackson.module.kotlin.KotlinModule.Builder().build())
+        registerModule(com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+        disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    }
+    val consumer = ActivityEventConsumer(repo, kafkaConfig, objectMapper)
+    consumer.start()
 
     routing {
         healthRoutes()
-        activityRoutes(repo)
+        activityRoutes(service)
     }
 }
