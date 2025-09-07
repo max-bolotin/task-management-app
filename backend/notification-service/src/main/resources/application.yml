@@ -3,6 +3,22 @@ micronaut:
     name: notification-service
   server:
     port: 8083
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowed-origins:
+            - "http://localhost:3000"
+          allowed-methods:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+          allowed-headers:
+            - "*"
+          allow-credentials: true
 
   # Serve generated OpenAPI + Swagger UI as static resources
   router:

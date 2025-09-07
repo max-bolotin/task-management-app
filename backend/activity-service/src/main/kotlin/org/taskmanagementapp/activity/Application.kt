@@ -9,7 +9,9 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
+import io.ktor.http.*
 import org.bson.types.ObjectId
 import org.taskmanagementapp.activity.consumer.ActivityEventConsumer
 import org.taskmanagementapp.activity.repo.ActivityRepository
@@ -40,6 +42,17 @@ fun Application.module() {
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             addMixIn(ObjectId::class.java, ObjectIdMixin::class.java)
         }
+    }
+
+    install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowCredentials = true
+        anyHost()
     }
 
     install(SwaggerUI) {

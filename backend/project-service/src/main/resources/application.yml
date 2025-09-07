@@ -1,6 +1,11 @@
 quarkus:
   http:
     port: 8082
+    cors:
+      ~: true
+      origins: "http://localhost:3000"
+      headers: "*"
+      methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
   smallrye-openapi:
     path: /q/openapi
     info:
