@@ -1,8 +1,10 @@
 package org.taskmanagementapp.project.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.taskmanagementapp.common.events.ActivityEventFactory;
 import org.taskmanagementapp.project.entity.Project;
 import org.taskmanagementapp.project.exception.ConflictException;
 import org.taskmanagementapp.project.exception.NotFoundException;
@@ -10,6 +12,9 @@ import org.taskmanagementapp.project.exception.ValidationException;
 
 @ApplicationScoped
 public class ProjectService {
+
+  @Inject
+  EventPublisher eventPublisher;
 
   public List<Project> getAllProjects() {
     return Project.listAll();
@@ -34,6 +39,12 @@ public class ProjectService {
 
     project.id = null; // Ensure ID is auto-generated
     project.persist();
+
+    // Publish activity event
+    eventPublisher.publishActivity(
+        ActivityEventFactory.projectCreated(project.ownerId, project.id, project.name)
+    );
+
     return project;
   }
 

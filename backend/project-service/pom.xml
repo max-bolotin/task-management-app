@@ -67,6 +67,12 @@
       <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
 
+    <!-- Kafka -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-messaging-kafka</artifactId>
+    </dependency>
+
     <!-- Common module -->
     <dependency>
       <groupId>org.task-management-app</groupId>

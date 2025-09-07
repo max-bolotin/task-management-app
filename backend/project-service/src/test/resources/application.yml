@@ -6,3 +6,12 @@ quarkus:
   hibernate-orm:
     database:
       generation: drop-and-create
+  kafka:
+    devservices:
+      enabled: false
+  smallrye-messaging:
+    outgoing:
+      activity-events:
+        connector: smallrye-in-memory
+      notification-events:
+        connector: smallrye-in-memory
