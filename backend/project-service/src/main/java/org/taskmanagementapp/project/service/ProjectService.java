@@ -1,10 +1,11 @@
 package org.taskmanagementapp.project.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import org.taskmanagementapp.common.events.ActivityEventFactory;
+import org.taskmanagementapp.project.event.ProjectCreatedEvent;
 import org.taskmanagementapp.project.entity.Project;
 import org.taskmanagementapp.project.exception.ConflictException;
 import org.taskmanagementapp.project.exception.NotFoundException;
@@ -14,7 +15,7 @@ import org.taskmanagementapp.project.exception.ValidationException;
 public class ProjectService {
 
   @Inject
-  EventPublisher eventPublisher;
+  Event<ProjectCreatedEvent> projectCreatedEvent;
 
   public List<Project> getAllProjects() {
     return Project.listAll();
@@ -40,10 +41,8 @@ public class ProjectService {
     project.id = null; // Ensure ID is auto-generated
     project.persist();
 
-    // Publish activity event
-    eventPublisher.publishActivity(
-        ActivityEventFactory.projectCreated(project.ownerId, project.id, project.name)
-    );
+    // Fire CDI event for async processing
+    projectCreatedEvent.fire(new ProjectCreatedEvent(project.id, project.name, project.ownerId));
 
     return project;
   }
