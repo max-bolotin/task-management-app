@@ -48,6 +48,11 @@
       <artifactId>ktor-server-call-logging-jvm</artifactId>
       <version>${ktor.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-server-cors-jvm</artifactId>
+      <version>${ktor.version}</version>
+    </dependency>
 
     <!-- Automatic OpenAPI/Swagger support -->
     <dependency>
@@ -84,6 +89,13 @@
       <version>1.5.6</version>
     </dependency>
 
+    <!-- Kafka Consumer -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>3.5.1</version>
+    </dependency>
+
     <!-- Common DTOs -->
     <dependency>
       <groupId>org.task-management-app</groupId>
@@ -101,6 +113,44 @@
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-reflect</artifactId>
       <version>${kotlin.version}</version>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-server-test-host-jvm</artifactId>
+      <version>${ktor.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
+      <version>${kotlin.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.9.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito.kotlin</groupId>
+      <artifactId>mockito-kotlin</artifactId>
+      <version>4.1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.14.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <version>1.14.5</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -131,6 +181,11 @@
             <goals>
               <goal>test-compile</goal>
             </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+              </sourceDirs>
+            </configuration>
           </execution>
         </executions>
         <configuration>
@@ -140,6 +195,12 @@
       </plugin>
 
       <!-- Shade to make a fat jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M9</version>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>

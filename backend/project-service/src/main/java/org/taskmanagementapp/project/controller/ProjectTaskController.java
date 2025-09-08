@@ -1,10 +1,12 @@
 package org.taskmanagementapp.project.controller;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.taskmanagementapp.project.entity.Task;
 import org.taskmanagementapp.project.exception.NotFoundException;
@@ -22,7 +24,8 @@ public class ProjectTaskController {
 
   @GET
   @Operation(summary = "Get all tasks for a project")
-  public Response getProjectTasks(@PathParam("projectId") Long projectId) {
+  public Response getProjectTasks(
+      @Parameter(description = "Project ID") @PathParam("projectId") Long projectId) {
     try {
       List<Task> tasks = taskService.getTasksByProject(projectId);
       return Response.ok(tasks).build();
@@ -33,7 +36,8 @@ public class ProjectTaskController {
 
   @POST
   @Operation(summary = "Create new task in project")
-  public Response createTask(@PathParam("projectId") Long projectId, Task task) {
+  public Response createTask(
+      @Parameter(description = "Project ID") @PathParam("projectId") Long projectId, Task task) {
     try {
       Task createdTask = taskService.createTask(projectId, task);
       return Response.status(Response.Status.CREATED).entity(createdTask).build();

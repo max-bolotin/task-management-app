@@ -1,6 +1,11 @@
 quarkus:
   http:
     port: 8082
+    cors:
+      ~: true
+      origins: "http://localhost:3000"
+      headers: "*"
+      methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
   smallrye-openapi:
     path: /q/openapi
     info:
@@ -20,3 +25,23 @@ quarkus:
   hibernate-orm:
     database:
       generation: update
+  
+  kafka:
+    devservices:
+      enabled: false
+
+mp:
+  messaging:
+    outgoing:
+      activity-events:
+        connector: smallrye-kafka
+        topic: activity-events
+        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
+      notification-events:
+        connector: smallrye-kafka
+        topic: notification-events
+        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
