@@ -100,6 +100,24 @@ task-management-app/
 
 ## 🚀 Running the App
 
+### Frontend Only (Quick Start)
+
+```bash
+# Navigate to frontend
+cd frontend
+
+# Install dependencies (first time)
+npm install
+
+# Start development server
+npm start
+```
+
+**Access:** http://localhost:3000  
+**Test Login:** `test@example.com` / `password`
+
+### Full Stack
+
 ### Prerequisites
 
 - Java 21+
@@ -166,7 +184,7 @@ docker compose up --build
 | **Project Service**  | **http://localhost:8082** | **✅ Complete**  | **`/q/swagger-ui`** |
 | Notification Service | http://localhost:8083     | 🔄 In Progress  | `/swagger-ui`       |
 | **Activity Service** | **http://localhost:8084** | **✅ Complete**  | **`/swagger-ui`**   |
-| Frontend             | http://localhost:3000     | 📋 Planned      | -                   |
+| **Frontend**         | **http://localhost:3000** | **🔄 MVP Ready** | **React App**       |
 | **Kafka UI**         | **http://localhost:9090** | **✅ Available** | **Monitoring**      |
 
 ---
@@ -203,12 +221,17 @@ docker compose up --build
 - **User Service** - Authentication and user management
 - **Notification Service** - In-app notifications
 
+### 🔄 In Progress
+
+- **User Service** - Authentication and user management
+- **Notification Service** - In-app notifications
+- **Frontend (React)** - MVP user interface with basic project/task management (MVP features implemented)
+
 ### 📋 Planned
 
-- **Frontend** - React UI
 - **JWT Authentication** - Cross-service security
 - **Service Integration** - Inter-service communication
-- **Side Effects** - Event publishing to activity/notification services
+- **Frontend Enhancements** - Advanced project management features
 
 ---
 
@@ -225,6 +248,19 @@ docker compose up --build
 - [x] **Service Architecture** - Clean separation of concerns
 - [x] **Test Coverage** - Comprehensive test suite
 
+### Frontend MVP ✅ IMPLEMENTED
+
+- [x] **Authentication Pages** - Login/Register with mock auth fallback
+- [x] **Dashboard** - Project listing and creation
+- [x] **Project Management** - CRUD operations for projects
+- [x] **Task Management** - Kanban board with TODO/IN_PROGRESS/DONE states
+- [x] **Activity Feed** - Real-time activity tracking
+- [x] **Notifications** - Basic notification system UI
+- [x] **Responsive Design** - Clean, modern interface
+- [x] **API Integration** - Connects to backend services with fallbacks
+- [x] **Routing** - Protected routes and navigation
+- [x] **CORS Configuration** - Cross-origin requests enabled
+
 ### Remaining Services
 
 - [x] **Database Integration** - PostgreSQL with proper schema
@@ -232,6 +268,17 @@ docker compose up --build
 - [ ] **User Authentication** - JWT-based security
 - [ ] **Notification System** - Real-time updates
 - [x] **Activity Logging** - Audit trail
-- [ ] **Frontend UI** - React application
+- [x] **Frontend UI** - React application (MVP complete)
 - [ ] **Service Integration** - Cross-service communication
 - [ ] **Docker Deployment** - Full containerization
+
+### Future Frontend Enhancements 🚀
+
+- [ ] **Custom Task Statuses** - User-defined workflow states beyond TODO/IN_PROGRESS/DONE
+- [ ] **Sprint Planning** - Agile sprint management and planning tools
+- [ ] **Time/Effort Estimation** - Task estimation and time tracking
+- [ ] **Advanced Planning** - Roadmaps, milestones, and project planning
+- [ ] **Real-time Collaboration** - Live updates and team collaboration
+- [ ] **Advanced Reporting** - Analytics and project insights
+- [ ] **Mobile Responsiveness** - Enhanced mobile experience
+- [ ] **Drag & Drop** - Advanced task management interactions
