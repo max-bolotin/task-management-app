@@ -178,14 +178,14 @@ docker compose up --build
 
 ### 4. Access Services
 
-| Service              | URL                       | Status          | Documentation       |
-|----------------------|---------------------------|-----------------|---------------------|
-| User Service         | http://localhost:8081     | 🔄 In Progress  | `/swagger-ui`       |
-| **Project Service**  | **http://localhost:8082** | **✅ Complete**  | **`/q/swagger-ui`** |
-| Notification Service | http://localhost:8083     | 🔄 In Progress  | `/swagger-ui`       |
-| **Activity Service** | **http://localhost:8084** | **✅ Complete**  | **`/swagger-ui`**   |
+| Service              | URL                       | Status           | Documentation       |
+|----------------------|---------------------------|------------------|---------------------|
+| **User Service**     | **http://localhost:8081** | **✅ Complete**   | **`/swagger-ui`**   |
+| **Project Service**  | **http://localhost:8082** | **✅ Complete**   | **`/q/swagger-ui`** |
+| Notification Service | http://localhost:8083     | 🔄 In Progress   | `/swagger-ui`       |
+| **Activity Service** | **http://localhost:8084** | **✅ Complete**   | **`/swagger-ui`**   |
 | **Frontend**         | **http://localhost:3000** | **🔄 MVP Ready** | **React App**       |
-| **Kafka UI**         | **http://localhost:9090** | **✅ Available** | **Monitoring**      |
+| **Kafka UI**         | **http://localhost:9090** | **✅ Available**  | **Monitoring**      |
 
 ---
 
@@ -218,19 +218,28 @@ docker compose up --build
 
 ### 🔄 In Progress
 
-- **User Service** - Authentication and user management
-- **Notification Service** - In-app notifications
+- **User Service** - In progress with features:
+    - ✅ JWT-based authentication (register, login, refresh)
+    - ✅ User management CRUD operations
+    - ✅ BCrypt password hashing
+    - ✅ Role-based user system (USER, ADMIN)
+    - ✅ Admin user auto-seeding
+    - ✅ OpenAPI/Swagger documentation
+    - ✅ CORS configuration
+    - ✅ Security filter chain with JWT validation
+    - 🔄 Role-based authorization
 
 ### 🔄 In Progress
 
-- **User Service** - Authentication and user management
 - **Notification Service** - In-app notifications
-- **Frontend (React)** - MVP user interface with basic project/task management (MVP features implemented)
+- **Frontend (React)** - MVP user interface with basic project/task management (MVP features
+  implemented)
 
 ### 📋 Planned
 
-- **JWT Authentication** - Cross-service security
-- **Service Integration** - Inter-service communication
+- **Service Integration** - Inter-service communication and JWT validation
+- **Frontend Authentication** - Connect React app to real User Service
+- **Notification System** - Complete notification service implementation
 - **Frontend Enhancements** - Advanced project management features
 
 ---
@@ -261,11 +270,22 @@ docker compose up --build
 - [x] **Routing** - Protected routes and navigation
 - [x] **CORS Configuration** - Cross-origin requests enabled
 
+### User Service ✅ COMPLETE
+
+- [x] **Authentication Endpoints** - Register, login, profile management
+- [x] **User Management** - CRUD operations for users
+- [x] **JWT Security** - Token-based authentication with BCrypt
+- [x] **Role System** - USER and ADMIN roles
+- [x] **Admin Seeding** - Auto-create admin user on startup
+- [x] **API Documentation** - Swagger UI with proper parameter handling
+- [x] **Security Configuration** - CORS and JWT filter chain
+- [x] **Database Integration** - PostgreSQL with JPA/Hibernate
+
 ### Remaining Services
 
 - [x] **Database Integration** - PostgreSQL with proper schema
 - [x] **API Documentation** - Swagger UI for testing
-- [ ] **User Authentication** - JWT-based security
+- [x] **User Authentication** - JWT-based security
 - [ ] **Notification System** - Real-time updates
 - [x] **Activity Logging** - Audit trail
 - [x] **Frontend UI** - React application (MVP complete)
