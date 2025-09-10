@@ -21,6 +21,16 @@ spring:
 server:
   port: 8081
 
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:myVerySecretKeyForJWTTokenGeneration123456789}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# Admin Configuration
+admin:
+  email: ${ADMIN_EMAIL:admin@taskapp.com}
+  password: ${ADMIN_PASSWORD:admin123}
+
 # CORS Configuration
 cors:
   allowed-origins: "http://localhost:3000"
