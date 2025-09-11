@@ -1,14 +1,41 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { activityApi } from '../services/api';
+import useWebSocket from '../hooks/useWebSocket';
 
 const ActivityFeed = ({ projectId, limit = 10 }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // WebSocket connection for real-time updates
+  const wsUrl = projectId 
+    ? `ws://localhost:8084/ws/activities?projectId=${projectId}`
+    : 'ws://localhost:8084/ws/activities';
+    
+  const { isConnected } = useWebSocket(wsUrl, {
+    onMessage: (message) => {
+      // Skip connection confirmation messages
+      if (message.type === 'connection') return;
+      
+      // Add new activity to the top of the list
+      setActivities(prev => {
+        // Avoid duplicates
+        const exists = prev.some(activity => activity.id === message.id);
+        if (exists) return prev;
+        
+        return [message, ...prev].slice(0, limit * 2); // Keep reasonable limit
+      });
+    }
+  });
 
   useEffect(() => {
     loadActivities();
   }, [projectId]);
+  
+  // Log WebSocket connection status
+  useEffect(() => {
+    console.log('WebSocket connection status:', isConnected ? 'Connected' : 'Disconnected');
+  }, [isConnected]);
 
   const loadActivities = async () => {
     try {

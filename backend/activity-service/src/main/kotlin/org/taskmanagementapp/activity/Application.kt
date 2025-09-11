@@ -11,13 +11,17 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import io.ktor.http.*
+import java.time.Duration
 import org.bson.types.ObjectId
 import org.taskmanagementapp.activity.consumer.ActivityEventConsumer
 import org.taskmanagementapp.activity.repo.ActivityRepository
 import org.taskmanagementapp.activity.routes.activityRoutes
 import org.taskmanagementapp.activity.routes.healthRoutes
+import org.taskmanagementapp.activity.routes.websocketRoutes
 import org.taskmanagementapp.activity.service.ActivityService
+import org.taskmanagementapp.activity.websocket.WebSocketManager
 
 fun main() {
     val server = embeddedServer(
@@ -55,6 +59,13 @@ fun Application.module() {
         anyHost()
     }
 
+    install(WebSockets) {
+        pingPeriod = Duration.ofSeconds(15)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+    }
+
     install(SwaggerUI) {
         swagger {
             swaggerUrl = "swagger-ui"
@@ -80,6 +91,7 @@ fun Application.module() {
 
     val repo = ActivityRepository(mongoUri, dbName, coll)
     val service = ActivityService(repo)
+    val webSocketManager = WebSocketManager()
 
     // Kafka configuration
     val kafkaConfig = mapOf(
@@ -101,11 +113,12 @@ fun Application.module() {
         registerModule(com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
         disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }
-    val consumer = ActivityEventConsumer(repo, kafkaConfig, objectMapper)
+    val consumer = ActivityEventConsumer(repo, kafkaConfig, objectMapper, webSocketManager)
     consumer.start()
 
     routing {
         healthRoutes()
         activityRoutes(service)
+        websocketRoutes(webSocketManager)
     }
 }
