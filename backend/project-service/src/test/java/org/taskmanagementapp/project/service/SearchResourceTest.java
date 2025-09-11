@@ -7,15 +7,17 @@ import static org.hamcrest.Matchers.equalTo;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.taskmanagementapp.project.BaseAuthenticatedTest;
 
 @QuarkusTest
-public class SearchResourceTest {
+public class SearchResourceTest extends BaseAuthenticatedTest {
 
   @Test
   public void testSearchByQuery() {
     // Create project with unique key
     String uniqueKey = "SEARCH" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -30,6 +32,7 @@ public class SearchResourceTest {
 
     // Create tasks
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -41,6 +44,7 @@ public class SearchResourceTest {
         .then().statusCode(201);
 
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -53,6 +57,7 @@ public class SearchResourceTest {
 
     // Search by title
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .queryParam("q", "login")
         .when().get("/search")
         .then()
@@ -62,6 +67,7 @@ public class SearchResourceTest {
 
     // Search by description
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .queryParam("q", "dashboard")
         .when().get("/search")
         .then()
@@ -77,6 +83,7 @@ public class SearchResourceTest {
     String uniqueKey2 = "PROJ2" + System.currentTimeMillis();
 
     Integer projectId1 = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -90,6 +97,7 @@ public class SearchResourceTest {
         .extract().path("id");
 
     Integer projectId2 = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -104,6 +112,7 @@ public class SearchResourceTest {
 
     // Create tasks in different projects
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -114,6 +123,7 @@ public class SearchResourceTest {
         .then().statusCode(201);
 
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -125,6 +135,7 @@ public class SearchResourceTest {
 
     // Search by project ID
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .queryParam("projectId", projectId1)
         .when().get("/search")
         .then()
@@ -138,6 +149,7 @@ public class SearchResourceTest {
     // Create project with unique key
     String uniqueKey = "ASSIGN" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -152,6 +164,7 @@ public class SearchResourceTest {
 
     // Create task
     Integer taskId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -164,11 +177,13 @@ public class SearchResourceTest {
 
     // Assign task
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().post("/tasks/" + taskId + "/assign/123")
         .then().statusCode(200);
 
     // Search by assignee ID
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .queryParam("assigneeId", 123)
         .when().get("/search")
         .then()
@@ -180,6 +195,7 @@ public class SearchResourceTest {
   @Test
   public void testSearchWithNoResults() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .queryParam("q", "nonexistent")
         .when().get("/search")
         .then()

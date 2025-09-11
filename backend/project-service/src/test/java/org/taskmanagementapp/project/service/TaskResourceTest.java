@@ -7,14 +7,16 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.taskmanagementapp.project.BaseAuthenticatedTest;
 
 @QuarkusTest
-class TaskResourceTest {
+class TaskResourceTest extends BaseAuthenticatedTest {
 
   @Test
   void testCreateAndGetTasks() {
     // Create project first
     var projectResponse = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -32,6 +34,7 @@ class TaskResourceTest {
 
     // Create task
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -49,6 +52,7 @@ class TaskResourceTest {
 
     // Get tasks for project
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().get("/projects/" + projectId + "/tasks")
         .then()
         .statusCode(200)
@@ -59,6 +63,7 @@ class TaskResourceTest {
   void testCreateTaskMissingTitle() {
     // Create project first
     var projectResponse = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -76,6 +81,7 @@ class TaskResourceTest {
 
     // Try to create task without title
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -91,6 +97,7 @@ class TaskResourceTest {
   @Test
   void testCreateTaskProjectNotFound() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -108,6 +115,7 @@ class TaskResourceTest {
   void testTaskDirectOperations() {
     // Create project and task first
     var projectResponse = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -124,6 +132,7 @@ class TaskResourceTest {
     Long projectId = projectResponse.jsonPath().getLong("id");
 
     var taskResponse = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -140,6 +149,7 @@ class TaskResourceTest {
 
     // Get task by ID
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().get("/tasks/" + taskId)
         .then()
         .statusCode(200)
@@ -147,6 +157,7 @@ class TaskResourceTest {
 
     // Update task with PATCH
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -161,6 +172,7 @@ class TaskResourceTest {
 
     // Assign task to user
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().post("/tasks/" + taskId + "/assign/2")
         .then()
         .statusCode(200)
@@ -168,12 +180,14 @@ class TaskResourceTest {
 
     // Delete task
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().delete("/tasks/" + taskId)
         .then()
         .statusCode(204);
 
     // Verify task is deleted
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().get("/tasks/" + taskId)
         .then()
         .statusCode(404);
@@ -182,6 +196,7 @@ class TaskResourceTest {
   @Test
   void testTaskAssignmentNotFound() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().post("/tasks/999/assign/1")
         .then()
         .statusCode(404);
@@ -190,6 +205,7 @@ class TaskResourceTest {
   @Test
   void testTaskUpdateNotFound() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -204,6 +220,7 @@ class TaskResourceTest {
   @Test
   void testDeleteTaskNotFound() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().delete("/tasks/999")
         .then()
         .statusCode(404);
