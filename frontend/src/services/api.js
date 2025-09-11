@@ -48,7 +48,7 @@ export const userApi = {
   },
   getProfile: () => {
     if (USE_MOCK_AUTH) return mockAuthApi.getProfile();
-    return api.get(`${API_BASE_URL}:8081/users/profile`)
+    return api.get(`${API_BASE_URL}:8081/auth/me`)
       .catch(() => mockAuthApi.getProfile());
   },
 };

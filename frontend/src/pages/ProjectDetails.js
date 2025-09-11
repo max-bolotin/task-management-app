@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { projectApi } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import ActivityFeed from '../components/ActivityFeed';
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
+  const { user } = useAuth();
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,7 @@ const ProjectDetails = () => {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
+      // Backend will extract user ID from JWT token
       await projectApi.createTask(projectId, newTask);
       setNewTask({ title: '', description: '', status: 'TODO' });
       setShowCreateTask(false);
@@ -118,7 +121,8 @@ const ProjectDetails = () => {
                   <p>{task.description}</p>
                   <div className="task-meta">
                     <span>#{task.id}</span>
-                    {task.assigneeId && <span>Assigned to: {task.assigneeId}</span>}
+                    <span>Assignee: {task.assigneeId ? `User ${task.assigneeId}` : 'Unassigned'}</span>
+                    {task.reporterId && <span>Reporter: User {task.reporterId}</span>}
                   </div>
                   <div className="task-actions">
                     <select

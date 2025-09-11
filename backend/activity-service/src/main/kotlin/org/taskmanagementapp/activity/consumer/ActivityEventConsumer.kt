@@ -16,7 +16,8 @@ import java.util.*
 class ActivityEventConsumer(
     private val repository: ActivityRepository,
     private val kafkaConfig: Map<String, String>,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val webSocketManager: org.taskmanagementapp.activity.websocket.WebSocketManager
 ) {
     private val logger = LoggerFactory.getLogger(ActivityEventConsumer::class.java)
     private var consumerJob: Job? = null
@@ -93,6 +94,9 @@ class ActivityEventConsumer(
 
             val savedId = repository.save(activityEvent)
             logger.debug("Saved activity event: {} with ID: {}", commonEvent.eventType, savedId)
+
+            // Broadcast to WebSocket clients
+            webSocketManager.broadcastActivity(activityEvent)
         } catch (e: Exception) {
             logger.error("Failed to handle event: {}", eventJson, e)
             throw e

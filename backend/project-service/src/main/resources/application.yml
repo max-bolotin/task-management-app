@@ -1,34 +1,58 @@
 quarkus:
+  datasource:
+    db-kind: postgresql
+    username: taskapp
+    password: secret
+    jdbc:
+      url: jdbc:postgresql://localhost:5432/taskdb
+
+  hibernate-orm:
+    database:
+      generation: update
+    log:
+      sql: false
+
   http:
     port: 8082
     cors:
       ~: true
       origins: "http://localhost:3000"
       headers: "*"
-      methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-  smallrye-openapi:
-    path: /q/openapi
-    info:
-      title: Project Service API
-      version: "1.0"
-      description: Project management service
-  swagger-ui:
-    always-include: true
-  
-  datasource:
-    db-kind: postgresql
-    username: ${DATASOURCE_USERNAME:taskapp}
-    password: ${DATASOURCE_PASSWORD:secret}
-    jdbc:
-      url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskdb}
-  
-  hibernate-orm:
-    database:
-      generation: update
-  
+      methods: "*"
+
+  # Disable dev services since we use external Kafka
   kafka:
     devservices:
       enabled: false
+
+  smallrye-openapi:
+    path: /q/openapi
+    info-title: Project Service API
+    info-version: 1.0.0
+
+  # JWT Configuration
+  smallrye-jwt:
+    enabled: true
+
+# JWT Configuration
+mp:
+  jwt:
+    verify:
+      publickey:
+        algorithm: HS256
+      issuer: none
+    token:
+      header: Authorization
+      cookie: jwt
+
+# Manual JWT secret configuration
+jwt:
+  secret: ${JWT_SECRET:myVerySecretKeyForJWTTokenGeneration123456789}
+
+# Kafka configuration
+kafka:
+  bootstrap:
+    servers: localhost:9092
 
 mp:
   messaging:
@@ -36,12 +60,12 @@ mp:
       activity-events:
         connector: smallrye-kafka
         topic: activity-events
-        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        bootstrap.servers: localhost:9092
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer
       notification-events:
         connector: smallrye-kafka
         topic: notification-events
-        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+        bootstrap.servers: localhost:9092
         key.serializer: org.apache.kafka.common.serialization.StringSerializer
-        value.serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
+        value.serializer: org.apache.kafka.common.serialization.StringSerializer

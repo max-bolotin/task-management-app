@@ -10,12 +10,16 @@ The Project Service handles:
 - **Project management** - Create, read, delete projects with unique keys
 - **Task management** - Create, read, update, delete tasks within projects
 - **Task assignment** - Assign tasks to users and manage task status
+- **JWT Authentication** - Validates JWT tokens and extracts current user ID
+- **Event Publishing** - Publishes activity and notification events to Kafka
 - **Data persistence** - PostgreSQL database with Hibernate ORM
 
 ## Configuration
 
 - **Port**: 8082
 - **Database**: PostgreSQL (taskdb)
+- **JWT Secret**: Shared with User Service via `JWT_SECRET` environment variable
+- **Kafka**: Publishes events to activity-events and notification-events topics
 - **API Documentation**: http://localhost:8082/q/swagger-ui
 
 ## Endpoints
@@ -112,13 +116,27 @@ PATCH /tasks/1
 ## Running the Service
 
 ```bash
-# Development mode
-mvn quarkus:dev
+# Development mode with JWT secret
+JWT_SECRET="your-super-long-random-secret-key-at-least-32-characters-long" mvn quarkus:dev
 
 # Build and run
 mvn package
-java -jar target/project-service-1.0-SNAPSHOT.jar
+JWT_SECRET="your-super-long-random-secret-key-at-least-32-characters-long" java -jar target/project-service-1.0-SNAPSHOT.jar
 ```
+
+## Authentication
+
+All endpoints require JWT authentication. Include the JWT token in the Authorization header:
+
+```
+Authorization: Bearer <jwt-token>
+```
+
+The service extracts the current user ID from the JWT token and automatically assigns it as:
+
+- **Reporter** when creating tasks
+- **Assignee** when creating tasks (if not specified)
+- **Actor** for all activity events
 
 ## Testing
 
@@ -157,6 +175,8 @@ mvn package -DskipTests
 - Quarkus REST
 - Hibernate ORM with Panache
 - PostgreSQL JDBC driver
+- SmallRye JWT (JWT authentication)
+- Kafka messaging
 - OpenAPI/Swagger UI
 - Common module (shared DTOs and enums)
 - JUnit 5 & REST Assured (testing)

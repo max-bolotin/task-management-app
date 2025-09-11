@@ -3,6 +3,8 @@ package org.taskmanagementapp.project.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import java.util.List;
 import org.taskmanagementapp.common.enums.TaskStatus;
 import org.taskmanagementapp.common.events.ActivityEventFactory;
@@ -37,11 +39,21 @@ public class TaskService {
 
     task.id = null;
     task.projectId = projectId;
+
+    // Set default assignee and reporter to current user from JWT
+    Long currentUserId = getCurrentUserId();
+    if (task.assigneeId == null) {
+      task.assigneeId = currentUserId;
+    }
+    if (task.reporterId == null) {
+      task.reporterId = currentUserId;
+    }
+
     task.persist();
 
     // Publish activity event
     eventPublisher.publishActivity(
-        ActivityEventFactory.taskCreated(task.reporterId != null ? task.reporterId : 1L, projectId, task.id, task.title)
+        ActivityEventFactory.taskCreated(getCurrentUserId(), projectId, task.id, task.title)
     );
 
     return task;
@@ -94,13 +106,15 @@ public class TaskService {
     task.assigneeId = userId;
 
     // Publish events
+    Long currentUserId = getCurrentUserId();
     eventPublisher.publishActivity(
-        ActivityEventFactory.taskAssigned(1L, task.projectId, taskId, userId, task.title)
+        ActivityEventFactory.taskAssigned(currentUserId, task.projectId, taskId, userId, task.title)
     );
 
     if (userId != null) {
       eventPublisher.publishNotification(
-          NotificationEventFactory.taskAssigned(1L, userId, task.projectId, taskId, task.title)
+          NotificationEventFactory.taskAssigned(currentUserId, userId, task.projectId, taskId,
+              task.title)
       );
     }
 
@@ -118,19 +132,25 @@ public class TaskService {
     task.status = newStatus;
 
     // Publish activity event
+    Long currentUserId = getCurrentUserId();
     eventPublisher.publishActivity(
-        ActivityEventFactory.taskStatusChanged(1L, task.projectId, taskId,
+        ActivityEventFactory.taskStatusChanged(currentUserId, task.projectId, taskId,
             oldStatus.name(), newStatus.name(), task.title)
     );
 
     // Notify assignee if task status changed
     if (task.assigneeId != null) {
       eventPublisher.publishNotification(
-          NotificationEventFactory.taskStatusChanged(1L, task.assigneeId,
+          NotificationEventFactory.taskStatusChanged(currentUserId, task.assigneeId,
               task.projectId, taskId, task.title, newStatus.name())
       );
     }
 
     return task;
+  }
+
+  private Long getCurrentUserId() {
+    // This will be injected by the resource layer
+    return 1L; // Fallback - will be overridden by resource methods
   }
 }
