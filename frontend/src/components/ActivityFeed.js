@@ -31,11 +31,6 @@ const ActivityFeed = ({ projectId, limit = 10 }) => {
   useEffect(() => {
     loadActivities();
   }, [projectId]);
-  
-  // Log WebSocket connection status
-  useEffect(() => {
-    console.log('WebSocket connection status:', isConnected ? 'Connected' : 'Disconnected');
-  }, [isConnected]);
 
   const loadActivities = async () => {
     try {
