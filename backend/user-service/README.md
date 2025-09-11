@@ -210,8 +210,10 @@ Health check endpoint.
 
 ## Security Features
 
-- **Password Hashing**: BCrypt with salt for secure password storage
+- **Password Hashing**: BCrypt with 12 salt rounds for secure password storage
+- **Password Strength**: Enforced pattern (8+ chars, uppercase, lowercase, digit, special char)
 - **JWT Tokens**: HS256 signed tokens with configurable expiration
+- **Environment-based Secrets**: JWT secret configurable via environment variables
 - **CORS Support**: Configured for frontend integration
 - **Role System**: USER and ADMIN roles for future authorization
 - **Admin Seeding**: Auto-creates admin user on first startup
@@ -239,13 +241,37 @@ spring:
 
 ## Running the Service
 
+### **Option 1: With Custom JWT Secret (Recommended)**
+
 ```bash
-# Development mode
+# Set JWT secret as environment variable
+export JWT_SECRET="your-super-long-random-secret-key-at-least-32-characters-long"
 mvn spring-boot:run
 
-# Build and run
+# Or inline
+JWT_SECRET="your-super-long-random-secret-key-at-least-32-characters-long" mvn spring-boot:run
+```
+
+### **Option 2: Default Secret (Development Only)**
+
+```bash
+# Uses default secret (not secure for production)
+mvn spring-boot:run
+```
+
+### **IntelliJ IDEA Setup:**
+
+1. Go to `Run` → `Edit Configurations...`
+2. Select User Service configuration
+3. In `Environment variables` add:
+   `JWT_SECRET=your-super-long-random-secret-key-at-least-32-characters-long`
+4. Click `OK` and run normally
+
+### **Production Deployment:**
+
+```bash
 mvn package
-java -jar target/user-service-1.0-SNAPSHOT.jar
+JWT_SECRET="your-production-secret" java -jar target/user-service-1.0-SNAPSHOT.jar
 ```
 
 ## Testing

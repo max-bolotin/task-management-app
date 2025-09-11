@@ -519,3 +519,20 @@ body {
   padding: 2rem;
   font-style: italic;
 }
+
+/* Password Validation */
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.error-input {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.field-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}

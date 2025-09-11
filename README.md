@@ -153,9 +153,9 @@ mvn clean install
 **Option B: Command Line**
 
 ```bash
-# User Service (Spring Boot)
+# User Service (Spring Boot) - with custom JWT secret
 cd backend/user-service
-mvn spring-boot:run
+JWT_SECRET="your-super-long-random-secret-key-at-least-32-characters-long" mvn spring-boot:run
 
 # Project Service (Quarkus) 
 cd backend/project-service

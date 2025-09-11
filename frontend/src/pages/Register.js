@@ -11,13 +11,56 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
+
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setUserData({...userData, password});
+    
+    if (password && !validatePassword(password)) {
+      setPasswordError('Password must contain 8+ characters, uppercase, lowercase, digit, special character');
+    } else {
+      setPasswordError('');
+    }
+    
+    // Check confirm password match
+    if (userData.confirmPassword && password !== userData.confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    const confirmPassword = e.target.value;
+    setUserData({...userData, confirmPassword});
+    
+    if (confirmPassword && userData.password !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match');
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Frontend validation
+    if (!validatePassword(userData.password)) {
+      setError('Please fix password requirements');
+      setLoading(false);
+      return;
+    }
 
     if (userData.password !== userData.confirmPassword) {
       setError('Passwords do not match');
@@ -62,20 +105,28 @@ const Register = () => {
             onChange={(e) => setUserData({...userData, email: e.target.value})}
             required
           />
-          <input
-            type="password"
-            placeholder="Password"
-            value={userData.password}
-            onChange={(e) => setUserData({...userData, password: e.target.value})}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={userData.confirmPassword}
-            onChange={(e) => setUserData({...userData, confirmPassword: e.target.value})}
-            required
-          />
+          <div className="input-group">
+            <input
+              type="password"
+              placeholder="Password"
+              value={userData.password}
+              onChange={handlePasswordChange}
+              className={passwordError ? 'error-input' : ''}
+              required
+            />
+            {passwordError && <div className="field-error">{passwordError}</div>}
+          </div>
+          <div className="input-group">
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={userData.confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              className={confirmPasswordError ? 'error-input' : ''}
+              required
+            />
+            {confirmPasswordError && <div className="field-error">{confirmPasswordError}</div>}
+          </div>
           <button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Register'}
           </button>
