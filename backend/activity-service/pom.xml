@@ -64,6 +64,20 @@
       <version>1.6.0</version>
     </dependency>
 
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-cio-jvm</artifactId>
+      <version>${ktor.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.ktor</groupId>
+      <artifactId>ktor-client-websockets-jvm</artifactId>
+      <version>${ktor.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Automatic OpenAPI/Swagger support -->
     <dependency>
       <groupId>io.github.smiley4</groupId>

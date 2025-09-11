@@ -7,13 +7,14 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.taskmanagementapp.project.BaseAuthenticatedTest;
 
 @QuarkusTest
-class ProjectResourceTest {
+class ProjectResourceTest extends BaseAuthenticatedTest {
 
   @Test
   void testGetAllProjects() {
-    given()
+    givenAuth()
         .when().get("/projects")
         .then()
         .statusCode(200)
@@ -22,7 +23,7 @@ class ProjectResourceTest {
 
   @Test
   void testCreateProject() {
-    given()
+    givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -42,7 +43,7 @@ class ProjectResourceTest {
 
   @Test
   void testCreateProjectMissingName() {
-    given()
+    givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -58,7 +59,7 @@ class ProjectResourceTest {
 
   @Test
   void testCreateProjectMissingOwner() {
-    given()
+    givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -75,7 +76,7 @@ class ProjectResourceTest {
   @Test
   void testCreateProjectDuplicateKey() {
     // Create first project
-    given()
+    givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -89,7 +90,7 @@ class ProjectResourceTest {
         .statusCode(201);
 
     // Try to create second project with same key
-    given()
+    givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -107,7 +108,7 @@ class ProjectResourceTest {
   @Test
   void testGetProjectById() {
     // Create project first
-    var response = given()
+    var response = givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -124,7 +125,7 @@ class ProjectResourceTest {
     Long projectId = response.jsonPath().getLong("id");
 
     // Get project by ID
-    given()
+    givenAuth()
         .when().get("/projects/" + projectId)
         .then()
         .statusCode(200)
@@ -134,7 +135,7 @@ class ProjectResourceTest {
 
   @Test
   void testGetProjectNotFound() {
-    given()
+    givenAuth()
         .when().get("/projects/999")
         .then()
         .statusCode(404);
@@ -143,7 +144,7 @@ class ProjectResourceTest {
   @Test
   void testDeleteProject() {
     // Create project first
-    var response = given()
+    var response = givenAuth()
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -160,13 +161,13 @@ class ProjectResourceTest {
     Long projectId = response.jsonPath().getLong("id");
 
     // Delete project
-    given()
+    givenAuth()
         .when().delete("/projects/" + projectId)
         .then()
         .statusCode(204);
 
     // Verify project is deleted
-    given()
+    givenAuth()
         .when().get("/projects/" + projectId)
         .then()
         .statusCode(404);

@@ -6,15 +6,17 @@ import static org.hamcrest.Matchers.equalTo;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.taskmanagementapp.project.BaseAuthenticatedTest;
 
 @QuarkusTest
-public class CommentResourceTest {
+public class CommentResourceTest extends BaseAuthenticatedTest {
 
   @Test
   public void testCreateAndGetComments() {
     // Create project with unique key
     String uniqueKey = "TEST" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -29,6 +31,7 @@ public class CommentResourceTest {
 
     // Create task
     Integer taskId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -41,6 +44,7 @@ public class CommentResourceTest {
 
     // Create comment
     Integer commentId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -57,6 +61,7 @@ public class CommentResourceTest {
 
     // Get comments
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().get("/tasks/" + taskId + "/comments")
         .then()
         .statusCode(200)
@@ -69,6 +74,7 @@ public class CommentResourceTest {
     // Create project and task with unique key
     String uniqueKey = "TEST" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -82,6 +88,7 @@ public class CommentResourceTest {
         .extract().path("id");
 
     Integer taskId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -94,6 +101,7 @@ public class CommentResourceTest {
 
     // Create comment
     Integer commentId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -107,12 +115,14 @@ public class CommentResourceTest {
 
     // Delete comment
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().delete("/tasks/" + taskId + "/comments/" + commentId)
         .then()
         .statusCode(204);
 
     // Verify comment is deleted
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .when().get("/tasks/" + taskId + "/comments")
         .then()
         .statusCode(200)
@@ -122,6 +132,7 @@ public class CommentResourceTest {
   @Test
   public void testCreateCommentOnNonExistentTask() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -139,6 +150,7 @@ public class CommentResourceTest {
     // Create project and task with unique key
     String uniqueKey = "TEST" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -152,6 +164,7 @@ public class CommentResourceTest {
         .extract().path("id");
 
     Integer taskId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -164,6 +177,7 @@ public class CommentResourceTest {
 
     // Try to create comment without content
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {

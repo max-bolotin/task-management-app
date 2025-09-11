@@ -6,15 +6,17 @@ import static org.hamcrest.Matchers.equalTo;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.taskmanagementapp.project.BaseAuthenticatedTest;
 
 @QuarkusTest
-public class TaskTransitionTest {
+public class TaskTransitionTest extends BaseAuthenticatedTest {
 
   @Test
   public void testTransitionTask() {
     // Create project first with unique key
     String uniqueKey = "TEST" + System.currentTimeMillis();
     Integer projectId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body(String.format("""
             {
@@ -29,6 +31,7 @@ public class TaskTransitionTest {
 
     // Create task
     Integer taskId = given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -42,6 +45,7 @@ public class TaskTransitionTest {
 
     // Transition task to IN_PROGRESS
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {
@@ -57,6 +61,7 @@ public class TaskTransitionTest {
   @Test
   public void testTransitionNonExistentTask() {
     given()
+        .header("Authorization", "Bearer " + VALID_JWT)
         .contentType(ContentType.JSON)
         .body("""
             {

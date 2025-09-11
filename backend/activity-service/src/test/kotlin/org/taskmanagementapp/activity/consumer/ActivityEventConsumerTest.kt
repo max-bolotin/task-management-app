@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.*
 import org.taskmanagementapp.activity.repo.ActivityRepository
+import org.taskmanagementapp.activity.websocket.WebSocketManager
 
 class ActivityEventConsumerTest {
 
@@ -25,7 +26,9 @@ class ActivityEventConsumerTest {
                 "topic" to "test-topic",
                 "auto.offset.reset" to "earliest"
             )
-            val consumer = ActivityEventConsumer(repository, kafkaConfig, objectMapper)
+            val webSocketManager = WebSocketManager()
+            val consumer =
+                ActivityEventConsumer(repository, kafkaConfig, objectMapper, webSocketManager)
 
             consumer.start()
             delay(100) // Let it start
@@ -50,7 +53,9 @@ class ActivityEventConsumerTest {
             "auto.offset.reset" to "earliest"
         )
 
-        val consumer = ActivityEventConsumer(repository, kafkaConfig, objectMapper)
+        val webSocketManager = WebSocketManager()
+        val consumer =
+            ActivityEventConsumer(repository, kafkaConfig, objectMapper, webSocketManager)
 
         // Test that consumer can be created without errors
         kotlin.test.assertNotNull(consumer)
