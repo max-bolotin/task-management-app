@@ -36,6 +36,10 @@ public class JwtService {
     return extractClaims(token).getSubject();
   }
 
+  public String extractUsername(String token) {
+    return extractClaims(token).get("name", String.class);
+  }
+
   public Long extractUserId(String token) {
     return extractClaims(token).get("userId", Long.class);
   }
@@ -46,6 +50,14 @@ public class JwtService {
       return true;
     } catch (Exception e) {
       return false;
+    }
+  }
+
+  public boolean isTokenExpired(String token) {
+    try {
+      return extractClaims(token).getExpiration().before(new Date());
+    } catch (Exception e) {
+      return true;
     }
   }
 
