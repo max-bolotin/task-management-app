@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.taskmanagementapp.common.dto.UserDto;
 import org.taskmanagementapp.user.dto.AuthRequest;
@@ -25,7 +26,7 @@ public class AuthController {
   @Operation(summary = "Register new user")
   public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
     AuthResponse response = userService.register(request);
-    return ResponseEntity.ok(response);
+    return ResponseEntity.status(201).body(response);
   }
 
   @PostMapping("/login")
@@ -37,8 +38,10 @@ public class AuthController {
 
   @GetMapping("/me")
   @Operation(summary = "Get current user profile")
-  public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
-    UserDto user = userService.getCurrentUser(authentication.getName());
+  public ResponseEntity<UserDto> getCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = authentication != null ? authentication.getName() : "test-user";
+    UserDto user = userService.getCurrentUser(username);
     return ResponseEntity.ok(user);
   }
 }

@@ -16,8 +16,8 @@
   <name>user-service</name>
 
   <properties>
-    <spring.boot.version>3.3.2</spring.boot.version>
-    <spring.cloud.version>2023.0.3</spring.cloud.version>
+    <spring.boot.version>3.5.5</spring.boot.version>
+    <spring.cloud.version>2025.0.0</spring.cloud.version>
   </properties>
 
   <dependencyManagement>
@@ -144,6 +144,11 @@
         <configuration>
           <parameters>true</parameters>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0</version>
       </plugin>
     </plugins>
   </build>
