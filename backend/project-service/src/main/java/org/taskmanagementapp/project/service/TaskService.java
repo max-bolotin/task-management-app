@@ -29,7 +29,8 @@ public class TaskService {
 
   @Transactional
   public Task createTask(Long projectId, Task task) {
-    if (Project.findById(projectId) == null) {
+    Project project = Project.findById(projectId);
+    if (project == null) {
       throw new NotFoundException("Project not found");
     }
 
@@ -40,10 +41,10 @@ public class TaskService {
     task.id = null;
     task.projectId = projectId;
 
-    // Set default assignee and reporter to current user from JWT
+    // Set default assignee to project owner and reporter to current user
     Long currentUserId = getCurrentUserId();
     if (task.assigneeId == null) {
-      task.assigneeId = currentUserId;
+      task.assigneeId = project.ownerId; // Assign to project owner instead of current user
     }
     if (task.reporterId == null) {
       task.reporterId = currentUserId;
@@ -53,8 +54,16 @@ public class TaskService {
 
     // Publish activity event
     eventPublisher.publishActivity(
-        ActivityEventFactory.taskCreated(getCurrentUserId(), projectId, task.id, task.title)
+        ActivityEventFactory.taskCreated(currentUserId, projectId, task.id, task.title)
     );
+
+    // Publish notification event for task assignment (if assignee is different from creator)
+    if (task.assigneeId != null && !task.assigneeId.equals(currentUserId)) {
+      eventPublisher.publishNotification(
+          NotificationEventFactory.taskAssigned(currentUserId, task.assigneeId, projectId, task.id,
+              task.title)
+      );
+    }
 
     return task;
   }

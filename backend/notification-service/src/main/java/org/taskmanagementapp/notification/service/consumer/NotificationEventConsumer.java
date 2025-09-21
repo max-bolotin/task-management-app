@@ -1,5 +1,6 @@
 package org.taskmanagementapp.notification.service.consumer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import jakarta.inject.Inject;
@@ -17,20 +18,34 @@ public class NotificationEventConsumer {
   @Inject
   private NotificationRepository repository;
 
+  @Inject
+  private ObjectMapper objectMapper;
+
   @Topic("notification-events")
-  public void processNotificationEvent(NotificationEvent event) {
+  public void processNotificationEvent(String eventJson) {
     try {
-      logger.info("Processing notification event: {}", event.eventType());
+      logger.info("Received Kafka message: {}", eventJson);
+
+      NotificationEvent event = objectMapper.readValue(eventJson, NotificationEvent.class);
+      logger.info("Processing notification event: {} for user {}", event.eventType(),
+          event.targetUserId());
 
       String message = createMessage(event);
-      Notification notification = new Notification(event.targetUserId(), message,
-          event.eventType().toString());
+      String type = event.eventType().toString();
 
-      repository.save(notification);
-      logger.debug("Saved notification for user {}", event.targetUserId());
+      if (message == null || message.trim().isEmpty()) {
+        logger.warn("Empty message for notification event: {}", event.eventType());
+        return;
+      }
+
+      Notification notification = new Notification(event.targetUserId(), message, type);
+      Notification saved = repository.save(notification);
+
+      logger.info("Successfully saved notification with ID: {} for user {}: {}",
+          saved.getId(), event.targetUserId(), message);
 
     } catch (Exception e) {
-      logger.error("Failed to process notification event: {}", e.getMessage(), e);
+      logger.error("Failed to process notification event: {}", eventJson, e);
     }
   }
 

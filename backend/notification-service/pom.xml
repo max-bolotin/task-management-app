@@ -50,6 +50,12 @@
       <artifactId>micronaut-jackson-databind</artifactId>
     </dependency>
 
+    <!-- Logging -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
     <!-- OpenAPI annotations -->
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
@@ -77,7 +83,7 @@
       <artifactId>micronaut-management</artifactId>
     </dependency>
 
-    <!-- MongoDB - re-enabling step by step -->
+    <!-- MongoDB -->
     <dependency>
       <groupId>io.micronaut.mongodb</groupId>
       <artifactId>micronaut-mongo-sync</artifactId>
@@ -92,7 +98,6 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
     </dependency>
-
 
     <!-- Kafka -->
     <dependency>
