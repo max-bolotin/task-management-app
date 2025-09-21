@@ -61,7 +61,20 @@
           <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-http/3.8.9/micronaut-http-3.8.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-core-reactive/3.8.9/micronaut-core-reactive-3.8.9.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar" />
-          <entry name="$MAVEN_REPOSITORY$/io/projectreactor/reactor-core/3.5.0/reactor-core-3.5.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/projectreactor/reactor-core/3.4.18/reactor-core-3.4.18.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/data/micronaut-data-processor/3.9.7/micronaut-data-processor-3.9.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/data/micronaut-data-model/3.9.7/micronaut-data-model-3.9.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/data/micronaut-data-tx/3.9.7/micronaut-data-tx-3.9.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/javax/transaction/javax.transaction-api/1.3/javax.transaction-api-1.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-validation/3.7.6/micronaut-validation-3.7.6.jar" />
+          <entry name="$MAVEN_REPOSITORY$/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/data/micronaut-data-document-processor/3.9.7/micronaut-data-document-processor-3.9.7.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/serde/micronaut-serde-processor/1.3.3/micronaut-serde-processor-1.3.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/serde/micronaut-serde-api/1.3.3/micronaut-serde-api-1.3.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-context/3.5.3/micronaut-context-3.5.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/micronaut-json-core/3.5.3/micronaut-json-core-3.5.3.jar" />
+          <entry name="$MAVEN_REPOSITORY$/io/micronaut/data/micronaut-data-document-model/3.9.7/micronaut-data-document-model-3.9.7.jar" />
         </processorPath>
         <module name="notification-service" />
       </profile>
