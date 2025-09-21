@@ -1,4 +1,4 @@
-package org.taskmanagementapp.notification.service;
+package org.taskmanagementapp.notification.service.controller;
 
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
