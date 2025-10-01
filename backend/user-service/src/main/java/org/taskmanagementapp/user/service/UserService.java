@@ -9,6 +9,7 @@ import org.taskmanagementapp.user.dto.AuthRequest;
 import org.taskmanagementapp.user.dto.AuthResponse;
 import org.taskmanagementapp.user.dto.RegisterRequest;
 import org.taskmanagementapp.user.entity.User;
+import org.taskmanagementapp.user.exception.UserAuthenticationException;
 import org.taskmanagementapp.user.repository.UserRepository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class UserService {
 
   public AuthResponse register(RegisterRequest request) {
     if (userRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("Email already exists");
+      throw new UserAuthenticationException("Email already exists");
     }
 
     User user = new User();
@@ -41,10 +42,10 @@ public class UserService {
 
   public AuthResponse login(AuthRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        .orElseThrow(() -> new UserAuthenticationException("Invalid credentials"));
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-      throw new RuntimeException("Invalid credentials");
+      throw new UserAuthenticationException("Invalid credentials");
     }
 
     String token = jwtService.generateToken(user.getEmail(), user.getId());
@@ -53,7 +54,7 @@ public class UserService {
 
   public UserDto getCurrentUser(String email) {
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new UserAuthenticationException("User not found"));
     return toDto(user);
   }
 
@@ -70,14 +71,14 @@ public class UserService {
 
   public UserDto updateUser(Long id, UserDto updates) {
     User user = userRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new UserAuthenticationException("User not found"));
 
     if (updates.name() != null) {
       user.setName(updates.name());
     }
     if (updates.email() != null && !updates.email().equals(user.getEmail())) {
       if (userRepository.existsByEmail(updates.email())) {
-        throw new RuntimeException("Email already exists");
+        throw new UserAuthenticationException("Email already exists");
       }
       user.setEmail(updates.email());
     }

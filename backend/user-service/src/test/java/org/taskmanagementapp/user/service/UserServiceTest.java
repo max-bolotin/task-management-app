@@ -13,6 +13,7 @@ import org.taskmanagementapp.common.enums.Role;
 import org.taskmanagementapp.user.dto.AuthRequest;
 import org.taskmanagementapp.user.dto.RegisterRequest;
 import org.taskmanagementapp.user.entity.User;
+import org.taskmanagementapp.user.exception.UserAuthenticationException;
 import org.taskmanagementapp.user.repository.UserRepository;
 
 import java.util.Optional;
@@ -76,7 +77,7 @@ class UserServiceTest {
 
     when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
-    assertThrows(RuntimeException.class, () -> userService.register(request));
+    assertThrows(UserAuthenticationException.class, () -> userService.register(request));
   }
 
   @Test
@@ -105,7 +106,7 @@ class UserServiceTest {
     when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
     when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
-    assertThrows(RuntimeException.class, () -> userService.login(request));
+    assertThrows(UserAuthenticationException.class, () -> userService.login(request));
   }
 
   @Test
