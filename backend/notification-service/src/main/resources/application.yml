@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: notification-service
+  environments:
+    default: dev
   server:
     port: 8083
     cors:
@@ -8,7 +10,7 @@ micronaut:
       configurations:
         web:
           allowed-origins:
-            - "http://localhost:3000"
+            - http://localhost:3000
           allowed-methods:
             - GET
             - POST
@@ -18,9 +20,6 @@ micronaut:
             - OPTIONS
           allowed-headers:
             - "*"
-          allow-credentials: true
-
-  # Serve generated OpenAPI + Swagger UI as static resources
   router:
     static-resources:
       swagger:
@@ -33,7 +32,21 @@ micronaut:
         paths: classpath:static
         mapping: /**
 
-# Enable OpenAPI and Swagger UI
+mongodb:
+  uri: ${MONGO_URI:`mongodb://localhost:27017/notificationdb`}
+
+kafka:
+  consumers:
+    notification-service:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      session-timeout: 30000
+      heartbeat-interval: 3000
+      max-poll-interval: 300000
+  health:
+    enabled: false
+
 endpoints:
   all:
     enabled: true
@@ -41,8 +54,3 @@ endpoints:
   openapi:
     enabled: true
     sensitive: false
-
-# Example: (optional) configure Mongo/Slack/etc. later
-# notification:
-#   slack:
-#     webhookUrl: ${SLACK_WEBHOOK_URL:}
