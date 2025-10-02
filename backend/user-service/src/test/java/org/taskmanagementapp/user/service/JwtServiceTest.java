@@ -4,22 +4,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest
 class JwtServiceTest {
 
+  @Autowired
   private JwtService jwtService;
-
-  @BeforeEach
-  void setUp() {
-    jwtService = new JwtService();
-    ReflectionTestUtils.setField(jwtService, "secret",
-        "myVerySecretKeyForJWTTokenGeneration123456789");
-    ReflectionTestUtils.setField(jwtService, "expiration", 86400000L);
-  }
 
   @Test
   void testGenerateToken() {
