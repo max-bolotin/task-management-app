@@ -1,0 +1,13 @@
+micronaut:
+  application:
+    name: notification-service-test
+
+mongodb:
+  uri: mongodb://localhost:27017/test_notificationdb?retryWrites=false
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+  consumers:
+    notification-service:
+      auto-offset-reset: earliest

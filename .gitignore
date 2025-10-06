@@ -37,4 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### MCP Servers ###
+.continue/
+
 /backend/project-service/q-dev-chat-2025-09-11.md
